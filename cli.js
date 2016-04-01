@@ -46,8 +46,13 @@ switch(type) {
     });
 
   case 'clear':
-    console.log('start with clear');
-    // clear history here
+    config.deleteMovies();
+    return;
+
+  case 'search':
+    app.applySearch({
+      search: cli.flags.search,
+    });
     return;
 
   default:

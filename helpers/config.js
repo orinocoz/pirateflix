@@ -20,5 +20,14 @@ export async function saveMovie(movie) {
   jsonfile.writeFileSync(file, {
     ...config,
     history: uniqBy(history, 'name'),
-  })
+  });
+}
+
+export async function deleteMovies() {
+  const config = await get();
+
+  jsonfile.writeFileSync(file, {
+    ...config,
+    history: [],
+  });
 }
