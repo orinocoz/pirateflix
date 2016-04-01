@@ -6,8 +6,10 @@ require('babel-polyfill');
 
 const meow = require('meow');
 const chalk = require('chalk');
+const jsonfile = require('jsonfile');
 const app = require('./');
 const die = require('./helpers/die').default;
+const config = require('./helpers/config');
 const cli = meow(`
   Follow the steps by the wizard and
   make sure you have VLC installed.
@@ -32,9 +34,16 @@ if (flags.length > 1) {
 
 switch(type) {
   case 'history':
-    console.log('start with history');
-    // app.show({ ...history goes here })
-    return;
+    const data = config.get();
+
+    if (!data.history.length) {
+      die('You don\'t have any data in your history yet.');
+      return;
+    }
+
+    return app.show({
+      choices: data.history,
+    });
 
   case 'clear':
     console.log('start with clear');

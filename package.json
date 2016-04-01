@@ -19,6 +19,7 @@
     "exec": "^0.2.1",
     "inquirer": "^0.12.0",
     "isomorphic-fetch": "^2.2.1",
+    "jsonfile": "^2.2.3",
     "lodash": "^4.7.0",
     "meow": "^3.7.0",
     "ora": "^0.2.1"

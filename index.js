@@ -1,17 +1,20 @@
 import { prompt } from 'inquirer';
-import { isEmpty, compose } from 'lodash';
+import { isEmpty, find } from 'lodash';
 import { fork } from 'child_process';
 import { blue } from 'chalk';
 import ora from 'ora';
+import jsonfile from 'jsonfile';
 
 import die from './helpers/die';
 import get from './helpers/get';
 import parse from './helpers/parse';
 import format from './helpers/format';
 import aditional from './helpers/aditional';
+import { saveMovie } from './helpers/config';
 
 const peerflix = './node_modules/peerflix/app.js';
 const spinner = ora('Hang on, pirate doing pirate suff... 💀');
+
 
 export function show({ search, choices, page = 0 }) {
   prompt({
@@ -31,6 +34,11 @@ export function show({ search, choices, page = 0 }) {
         return query();
 
       default:
+        const item = find(choices, {
+          value: movie
+        });
+
+        saveMovie(item);
         return fork(peerflix, [movie, '--vlc']);
     }
   });
