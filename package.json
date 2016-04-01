@@ -16,6 +16,7 @@
     "babel-preset-stage-0": "^6.5.0",
     "chalk": "^1.1.3",
     "cheerio": "^0.20.0",
+    "exec": "^0.2.1",
     "inquirer": "^0.12.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.7.0",
@@ -23,6 +24,7 @@
   },
   "dependencies": {
     "es6-promise": "^3.1.2",
-    "isomorphic-fetch": "^2.2.1"
+    "isomorphic-fetch": "^2.2.1",
+    "peerflix": "^0.32.4"
   }
 }

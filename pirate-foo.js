@@ -1,13 +1,13 @@
-import { get } from 'axios';
 import { load } from 'cheerio';
 import { prompt } from 'inquirer';
 import { isEmpty, find } from 'lodash';
+import { green, red, blue } from 'chalk';
 import ora from 'ora';
 import fetch from 'isomorphic-fetch';
-import { green, red, blue } from 'chalk';
+import { spawn } from 'child_process';
 
+const peerflix = './node_modules/peerflix/app.js';
 const spinner = ora('Looking for pirate data... 💀');
-
 const config = {
   url: 'http://thepiratebay.se',
   search: 'Interstellar',
@@ -36,7 +36,7 @@ function parse(data) {
   }).get();
 }
 
-async function fetchResults(q) {
+async function get(q) {
   const request = await fetch(`${config.url}/s/?q=${q}`);
   return request.text();
 }
@@ -54,7 +54,7 @@ prompt({
   }
 }, async ({ search }) => {
   spinner.start();
-  const body = await fetchResults(search);
+  const body = await get(search);
   const results = parse(body);
   spinner.stop();
 
@@ -67,8 +67,8 @@ prompt({
     message: 'Choose one of the items:',
     choices,
   }, ({ title }) => {
-    const data = find(results, {});
-    console.log(data);
+    const { magnet } = find(results, {});
+    spawn(peerflix, [magnet, '--vlc', '--full-screen']);
   });
 
 });
