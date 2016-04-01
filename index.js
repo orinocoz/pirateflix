@@ -1,8 +1,10 @@
 import { prompt } from 'inquirer';
 import { isEmpty, compose } from 'lodash';
 import { fork } from 'child_process';
+import { blue } from 'chalk';
 import ora from 'ora';
 
+import die from './helpers/die';
 import get from './helpers/get';
 import parse from './helpers/parse';
 import format from './helpers/format';
@@ -38,6 +40,11 @@ export async function applySearch({ search, page = 0 }) {
   spinner.start();
   const results = parse(await get({ search, page }));
   spinner.stop();
+  if (!results.length) {
+    die(`Couldn\'t find any results matching ${blue.bold(search)}`)
+    return;
+  }
+
   show({
     search,
     choices: aditional(format(results)),
