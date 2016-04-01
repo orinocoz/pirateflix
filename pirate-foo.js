@@ -68,6 +68,8 @@ prompt({
     choices,
   }, ({ title }) => {
     const { magnet } = find(results, {});
+    spinner.text = 'Starting streaming...';
+    spinner.start();
     spawn(peerflix, [magnet, '--vlc', '--full-screen']);
   });
 
