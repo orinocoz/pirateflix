@@ -1,17 +1,18 @@
 import { load } from 'cheerio';
 import { prompt } from 'inquirer';
 import { isEmpty, find } from 'lodash';
-import { green, red, blue } from 'chalk';
+import { green, red, blue, yellow } from 'chalk';
+import { fork } from 'child_process';
 import ora from 'ora';
 import fetch from 'isomorphic-fetch';
-import { spawn } from 'child_process';
 
 const peerflix = './node_modules/peerflix/app.js';
 const spinner = ora('Looking for pirate data... 💀');
 const config = {
   url: 'http://thepiratebay.se',
-  search: 'Interstellar',
 };
+
+
 
 function parse(data) {
   const $ = load(data);
@@ -36,41 +37,85 @@ function parse(data) {
   }).get();
 }
 
-async function get(q) {
-  const request = await fetch(`${config.url}/s/?q=${q}`);
+async function get({ search, page }) {
+  const request = await fetch(`${config.url}/search/${search}/${page}/99`);
   return request.text();
 }
 
-prompt({
-  type: 'input',
-  name: 'search',
-  message: 'What are you looking for?',
-  validate: (x) => {
-    if (!isEmpty(x)) {
-      return true;
-    }
-
-    return 'Please enter a valid search';
-  }
-}, async ({ search }) => {
+async function select(page, { search }) {
   spinner.start();
-  const body = await get(search);
+  const body = await get({
+    search,
+    page,
+  });
+
   const results = parse(body);
   spinner.stop();
 
   const choices = results
-    .map(({ title, seeders, leechers }) => `${blue.bold(title)} ⬆ ${green(seeders)} ⬇ ${red(leechers)}`)
+    .map(({ title, seeders, leechers, magnet }) => ({
+      name: `${blue.bold(title)} ⬆ ${green(seeders)} ⬇ ${red(leechers)}`,
+      value: magnet,
+    }));
+
+  const aditional = [
+    {
+      name: yellow.bold('================ Show More ================'),
+      value: '@@MORE',
+    },
+    {
+      name: red.bold('================ Search it again ================'),
+      value: '@@SEARCH',
+    },
+  ];
 
   prompt({
     type: 'list',
-    name: 'title',
+    name: 'movie',
     message: 'Choose one of the items:',
-    choices,
-  }, ({ title }) => {
-    const { magnet } = find(results, {});
-    spinner.text = 'Starting streaming...';
-    spinner.start();
-    spawn(peerflix, [magnet, '--vlc', '--full-screen']);
-  });
+    choices: [
+      ...choices,
+      ...aditional,
+    ]
+  },({ movie }) => {
+    switch (movie) {
+      case '@@MORE':
+        return start(
+          search,
+          page + 1,
+        );
 
-});
+      case '@@SEARCH':
+        return start();
+
+      default:
+        return fork(peerflix, [movie, '--vlc']);
+    }
+  });
+}
+
+
+function start(search, page = 0) {
+  if (!isEmpty(search)) {
+    select(page, {
+      search,
+    });
+
+    return;
+  };
+
+  prompt({
+    type: 'input',
+    name: 'search',
+    message: 'What are you looking for?',
+    validate: (x) => {
+      if (!isEmpty(x)) {
+        return true;
+      }
+
+      return 'Please enter a valid search';
+    }
+  }, select.bind(this, page));
+}
+
+start();
