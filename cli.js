@@ -6,7 +6,8 @@ require('babel-polyfill');
 
 const meow = require('meow');
 const chalk = require('chalk');
-const app = require('./').default;
+const app = require('./');
+const die = require('./helpers/die').default;
 const cli = meow(`
   Follow the steps by the wizard and
   make sure you have VLC installed.
@@ -21,4 +22,25 @@ const cli = meow(`
   `
 );
 
-app();
+const flags = Object.keys(cli.flags);
+const type = flags[0] || '';
+
+if (flags.length > 1) {
+  die('Can\'t use more than one option at once.');
+  return;
+}
+
+switch(type) {
+  case 'history':
+    console.log('start with history');
+    // app.show({ ...history goes here })
+    return;
+
+  case 'clear':
+    console.log('start with clear');
+    // clear history here
+    return;
+
+  default:
+    return app.query();
+}

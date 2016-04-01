@@ -1,92 +1,32 @@
-import { load } from 'cheerio';
 import { prompt } from 'inquirer';
-import { isEmpty, find } from 'lodash';
-import { green, red, blue, yellow } from 'chalk';
+import { isEmpty, compose } from 'lodash';
 import { fork } from 'child_process';
 import ora from 'ora';
-import fetch from 'isomorphic-fetch';
+
+import get from './helpers/get';
+import parse from './helpers/parse';
+import format from './helpers/format';
+import aditional from './helpers/aditional';
 
 const peerflix = './node_modules/peerflix/app.js';
-const spinner = ora('Looking for pirate data... 💀');
-const config = {
-  url: 'http://thepiratebay.se',
-};
+const spinner = ora('Hang on, pirate doing pirate suff... 💀');
 
-
-
-function parse(data) {
-  const $ = load(data);
-  const $items = $('table#searchResult tr:has(a.detLink)');
-  return $items.map((i, x) => {
-    let $row = $(x);
-    return {
-      seeders: $row.find('td[align="right"]').first().text(),
-      leechers: $row.find('td[align="right"]').next().text(),
-      category: $row.find('[title="More from this category"]').text(),
-      title: $row.find('a.detLink').text(),
-      magnet: $row.find('[title="Download this torrent using magnet"]').attr('href'),
-      category: {
-        id: $row.find('center a').first().attr('href').match(/\/browse\/(\d+)/)[1],
-        name: $row.find('center a').first().text(),
-      },
-      subcategory: {
-        id: $row.find('center a').last().attr('href').match(/\/browse\/(\d+)/)[1],
-        name: $row.find('center a').last().text(),
-      },
-    }
-  }).get();
-}
-
-async function get({ search, page }) {
-  const request = await fetch(`${config.url}/search/${search}/${page}/99`);
-  return request.text();
-}
-
-async function select(page, { search }) {
-  spinner.start();
-  const body = await get({
-    search,
-    page,
-  });
-
-  const results = parse(body);
-  spinner.stop();
-
-  const choices = results
-    .map(({ title, seeders, leechers, magnet }) => ({
-      name: `${blue.bold(title)} ⬆ ${green(seeders)} ⬇ ${red(leechers)}`,
-      value: magnet,
-    }));
-
-  const aditional = [
-    {
-      name: yellow.bold('================ Show More ================'),
-      value: '@@MORE',
-    },
-    {
-      name: red.bold('================ Search it again ================'),
-      value: '@@SEARCH',
-    },
-  ];
-
+export function show({ search, choices, page = 0 }) {
   prompt({
     type: 'list',
     name: 'movie',
     message: 'Choose one of the items:',
-    choices: [
-      ...choices,
-      ...aditional,
-    ]
-  },({ movie }) => {
-    switch (movie) {
+    choices,
+  }, ({ movie }) => {
+    switch(movie) {
       case '@@MORE':
-        return start(
+        return applySearch({
           search,
-          page + 1,
-        );
+          page: page === 0 ? 1 : page + 1,
+        });
 
       case '@@SEARCH':
-        return start();
+        return query();
 
       default:
         return fork(peerflix, [movie, '--vlc']);
@@ -94,28 +34,29 @@ async function select(page, { search }) {
   });
 }
 
+export async function applySearch({ search, page = 0 }) {
+  spinner.start();
+  const results = parse(await get({ search, page }));
+  spinner.stop();
+  show({
+    search,
+    choices: aditional(format(results)),
+    page,
+  });
+}
 
-function start(search, page = 0) {
-  if (!isEmpty(search)) {
-    select(page, {
-      search,
-    });
-
-    return;
-  };
-
+export function query() {
   prompt({
     type: 'input',
     name: 'search',
-    message: 'What are you looking for?',
+    message: 'What movie are you looking for?',
     validate: (x) => {
       if (!isEmpty(x)) {
         return true;
       }
 
-      return 'Please enter a valid search';
+      return 'Please enter a valid search.';
     }
-  }, select.bind(this, page));
+  }, applySearch);
 }
 
-export default start;
