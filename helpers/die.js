@@ -2,7 +2,7 @@ import { red, bold } from 'chalk';
 
 export default function die(message) {
   console.log(`
-    ${bold('pirate-foo')}
+    ${bold('pirateflix')}
 
     ${red('✘')} ${message}
   `);

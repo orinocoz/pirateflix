@@ -20,7 +20,7 @@ const cli = meow(`
     ${chalk.bold('--clear')} Clears history of watched torrents.
 
   ${chalk.red.bold('Usage:')}
-    ${chalk.bold('pirate-foo [options]')}
+    ${chalk.bold('pirateflix [options]')}
   `
 );
 
