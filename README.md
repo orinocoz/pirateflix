@@ -2,7 +2,7 @@
 
 > Stream piratebay movies directly from CLI
 
-<img src="http://placehold.it/980x400" />
+<img src="./preview.png" />
 
 ## Install
 
