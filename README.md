@@ -4,11 +4,9 @@
 
 <img src="http://placehold.it/980x400" />
 
-## Usage
+## Options
 
 ```sh
-$ pirateflix
-$ pirateflix --search="Interstellar"
 $ pirateflix --help
   Follow the steps by the wizard and
   make sure you have VLC installed.
@@ -20,6 +18,14 @@ $ pirateflix --help
 
   Usage:
     pirateflix [options]
+```
+
+
+## Usage
+
+```sh
+$ pirateflix # will open movie wizard
+$ pirateflix --search="Interstellar" # will permorf a search
 ```
 
 ## Overview
