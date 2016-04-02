@@ -37,3 +37,7 @@ manually access and check it out.
 ## Related
 
 * [peerflix](https://github.com/mafintosh/peerflix)
+
+## License
+
+MIT © [Weslley Araujo](https://twitter.com/_weslleyaraujo)
