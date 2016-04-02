@@ -4,6 +4,12 @@
 
 <img src="http://placehold.it/980x400" />
 
+## Install
+
+```sh
+$ npm install pirateflix -g
+```
+
 ## Options
 
 ```sh
