@@ -1,6 +1,6 @@
 {
   "name": "pirateflix",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Stream piratebay movies directly from CLI",
   "repository": "weslleyaraujo/pirateflix",
   "main": "index.js",
@@ -10,11 +10,6 @@
   "bin": {
     "pirateflix": "./bin/pirateflix"
   },
-  "files": [
-    "cli.js",
-    "index.js",
-    ".babelrc"
-  ],
   "keywords": [
     "piratebay",
     "stream",
