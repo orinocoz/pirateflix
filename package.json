@@ -17,6 +17,9 @@
   "files": [
     "bin"
   ],
+  "files": {
+    "bin"
+  },
   "keywords": [
     "piratebay",
     "stream",
