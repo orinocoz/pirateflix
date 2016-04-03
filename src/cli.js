@@ -1,9 +1,9 @@
 'use strict';
 
-require('babel-core/register');
-require('babel-polyfill');
+module.exports = function () {
+  require('babel-core/register');
+  require('babel-polyfill');
 
-exports.run = function() {
   const meow = require('meow');
   const chalk = require('chalk');
   const jsonfile = require('jsonfile');
@@ -58,5 +58,5 @@ exports.run = function() {
     default:
       return app.query();
   }
-}
+}();
 
