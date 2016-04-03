@@ -4,6 +4,7 @@ import { fork } from 'child_process';
 import { blue } from 'chalk';
 import ora from 'ora';
 import jsonfile from 'jsonfile';
+import path from 'path';
 
 import die from './helpers/die';
 import get from './helpers/get';
@@ -12,7 +13,7 @@ import format from './helpers/format';
 import aditional from './helpers/aditional';
 import { saveMovie } from './helpers/config';
 
-const peerflix = './node_modules/peerflix/app.js';
+const peerflix = path.join(__dirname, '../node_modules/peerflix/app.js');
 const spinner = ora('Hang on, pirate doing pirate suff... 💀');
 
 export function show({ search, choices, page = 0 }) {
