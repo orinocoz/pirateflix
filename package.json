@@ -4,11 +4,6 @@
   "description": "Stream piratebay movies directly from CLI",
   "repository": "weslleyaraujo/pirateflix",
   "main": "index.js",
-  "scripts": {
-    "main": "./lib/index.js",
-    "compile": "babel --presets es2015,stage-0 -d lib/ src/",
-    "prepublish": "npm run compile"
-  },
   "engines": {
     "node": ">=4"
   },
