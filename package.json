@@ -1,17 +1,19 @@
 {
   "name": "pirateflix",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Stream piratebay movies directly from CLI",
   "repository": "weslleyaraujo/pirateflix",
   "main": "index.js",
   "scripts": {
-    "start": "node cli.js"
+    "main": "./lib/index.js",
+    "compile": "babel --presets es2015,stage-0 -d lib/ src/",
+    "prepublish": "npm run compile"
   },
   "engines": {
     "node": ">=4"
   },
   "bin": {
-    "pirateflix": "cli.js"
+    "hn": "./bin/hn-cli"
   },
   "files": [
     "cli.js",

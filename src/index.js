@@ -15,7 +15,6 @@ import { saveMovie } from './helpers/config';
 const peerflix = './node_modules/peerflix/app.js';
 const spinner = ora('Hang on, pirate doing pirate suff... 💀');
 
-
 export function show({ search, choices, page = 0 }) {
   prompt({
     type: 'list',
